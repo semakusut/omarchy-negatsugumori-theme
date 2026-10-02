@@ -1,0 +1,10 @@
+#!/bin/bash
+# Restore the Tsugumori-reskinned omarchy menu after an omarchy update
+# wipes /usr/share/omarchy/shell/plugins/menu (package-owned, root-only).
+# Source lives in ~/.local/share (user-owned, survives updates).
+# Fallback manual: sudo cp ~/.local/share/omarchy-menu-tsugumori/Menu.qml /usr/share/omarchy/shell/plugins/menu/Menu.qml
+SRC="$HOME/.local/share/omarchy-menu-tsugumori/Menu.qml"
+DST="/usr/share/omarchy/shell/plugins/menu/Menu.qml"
+if [[ -f $SRC ]] && ! cmp -s "$SRC" "$DST" 2>/dev/null; then
+  sudo -n cp "$SRC" "$DST" 2>/dev/null
+fi

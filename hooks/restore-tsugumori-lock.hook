@@ -1,0 +1,34 @@
+#!/bin/bash
+# Restore the Tsugumori-reskinned omarchy lock after an update wipes
+# /usr/share/omarchy/shell/plugins/lock (package-owned, root-only).
+# Source lives in ~/.local/share (user-owned, survives updates).
+# Fallback manual:
+#   for f in LockView FormationCorner PhaseLines PhaseCpuFallback; do
+#     sudo cp ~/.local/share/omarchy-lock-tsugumori/$f.qml /usr/share/omarchy/shell/plugins/lock/
+#   done
+#   sudo cp ~/.local/share/omarchy-lock-tsugumori/PhaseArt.js /usr/share/omarchy/shell/plugins/lock/
+#   sudo cp ~/.local/share/omarchy-lock-tsugumori/shaders/lines.*.qsb /usr/share/omarchy/shell/plugins/lock/shaders/
+SRC="$HOME/.local/share/omarchy-lock-tsugumori"
+DST="/usr/share/omarchy/shell/plugins/lock"
+copy_if_differs() {
+  [[ -f $1 ]] && ! cmp -s "$1" "$2" 2>/dev/null && sudo -n cp "$1" "$2" 2>/dev/null
+}
+copy_if_differs "$SRC/LockView.qml"            "$DST/LockView.qml"
+copy_if_differs "$SRC/FormationCorner.qml"     "$DST/FormationCorner.qml"
+copy_if_differs "$SRC/PhaseLines.qml"          "$DST/PhaseLines.qml"
+copy_if_differs "$SRC/PhaseCpuFallback.qml"    "$DST/PhaseCpuFallback.qml"
+copy_if_differs "$SRC/PhaseArt.js"             "$DST/PhaseArt.js"
+# Service.qml SENGAJA tidak di-restore: isinya identik dengan stock, dan hook
+# tidak punya sudoers rule untuk file itu — memanggilnya cuma menghasilkan
+# sudo error yang swallowed 2>/dev/null. Kalau suatu saat Service.qml di-reskin,
+# Service.qml WAJIB ditambahkan baris di sini DAN di COPY_PAIRS install.sh
+# (atau hook akan diam-diam gagal restore).
+if [[ -d $SRC/shaders ]]; then
+  sudo -n mkdir -p "$DST/shaders" 2>/dev/null
+  copy_if_differs "$SRC/shaders/lines.vert.qsb" "$DST/shaders/lines.vert.qsb"
+  copy_if_differs "$SRC/shaders/lines.frag.qsb" "$DST/shaders/lines.frag.qsb"
+fi
+
+# copy_if_differs mengembalikan status short-circuit terakhir (1 kalau file sudah
+# sama), jadi exit eksplisit supaya hook tidak dilaporkan gagal saat update.
+exit 0

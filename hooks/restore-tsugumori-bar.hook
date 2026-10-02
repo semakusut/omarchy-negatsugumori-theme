@@ -1,0 +1,28 @@
+#!/bin/bash
+# Restore the Tsugumori-reskinned omarchy bar widget after an omarchy update
+# wipes /usr/share/omarchy/shell/plugins/bar/widgets (package-owned, root-only).
+# Source lives in ~/.local/share (user-owned, survives updates).
+# Fallback manual: sudo cp ~/.local/share/omarchy-bar-tsugumori/widgets/Workspaces.qml /usr/share/omarchy/shell/plugins/bar/widgets/Workspaces.qml
+SRC="$HOME/.local/share/omarchy-bar-tsugumori/widgets/Workspaces.qml"
+DST="/usr/share/omarchy/shell/plugins/bar/widgets/Workspaces.qml"
+if [[ -f $SRC ]] && ! cmp -s "$SRC" "$DST" 2>/dev/null; then
+  sudo -n cp "$SRC" "$DST" 2>/dev/null
+fi
+# Clock pill (panels/clock/BarWidget.qml)
+SRC="$HOME/.local/share/omarchy-bar-tsugumori/clock/BarWidget.qml"
+DST="/usr/share/omarchy/shell/plugins/panels/clock/BarWidget.qml"
+if [[ -f $SRC ]] && ! cmp -s "$SRC" "$DST" 2>/dev/null; then
+  sudo -n cp "$SRC" "$DST" 2>/dev/null
+fi
+# Menu kanji logo (plugins/menu/BarWidget.qml)
+SRC="$HOME/.local/share/omarchy-bar-tsugumori/menu/BarWidget.qml"
+DST="/usr/share/omarchy/shell/plugins/menu/BarWidget.qml"
+if [[ -f $SRC ]] && ! cmp -s "$SRC" "$DST" 2>/dev/null; then
+  sudo -n cp "$SRC" "$DST" 2>/dev/null
+fi
+# WidgetButton fontWeight support (Ui/WidgetButton.qml)
+SRC="$HOME/.local/share/omarchy-bar-tsugumori/widgets/WidgetButton.qml"
+DST="/usr/share/omarchy/shell/Ui/WidgetButton.qml"
+if [[ -f $SRC ]] && ! cmp -s "$SRC" "$DST" 2>/dev/null; then
+  sudo -n cp "$SRC" "$DST" 2>/dev/null
+fi

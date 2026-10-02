@@ -1,0 +1,32 @@
+# Tsugumori — Knights of Sidonia themed, mapped from config/quickshell/theme/Theme.qml + kitty.conf
+mode = "dark"
+
+accent = "#cc1515"
+selection = "#2a2a2a"
+muted = "#909090"
+
+background = "#0a0a0a"
+dark_background = "#080808"
+darker_background = "#050505"
+lighter_background = "#1a1a1a"
+
+foreground = "#e8e8e8"
+dark_foreground = "#909090"
+light_foreground = "#c8c8c4"
+bright_foreground = "#ffffff"
+
+red = "#cc1515"
+yellow = "#c8c8c4"
+orange = "#c8c8c4"
+green = "#7a8faa"
+cyan = "#7a8faa"
+blue = "#7a8faa"
+magenta = "#9e1010"
+brown = "#909090"
+
+bright_red = "#9e1010"
+bright_yellow = "#c8c8c4"
+bright_green = "#7a8faa"
+bright_cyan = "#7a8faa"
+bright_blue = "#7a8faa"
+bright_magenta = "#cc1515"
