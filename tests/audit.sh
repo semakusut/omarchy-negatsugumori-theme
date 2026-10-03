@@ -38,10 +38,26 @@ if [[ -f LICENSE ]]; then
   done
 else bad "LICENSE tidak ada"; fi
 
-# 4. Tidak ada file >512k: background dan font tidak ikut.
-big=$(find . -path ./.git -prune -o -type f -size +512k -print 2>/dev/null)
-if [[ -z $big ]]; then ok "tidak ada file >512k"
+# 4. Batas ukuran. Asal (font/background mentah) dulu dilarang karena bisa
+#    masuk 20MB dalam satu commit. Sekarang background memang ikut, jadi
+#    blanket ban sudah tidak jujur — yang dijaga adalah UKURAN hasil turunnya:
+#      - sumber asli tidak boleh ikut (git tidak butuh 8000x4500)
+#      - preview.png dikecualikan: konvensi Omarchy sendiri 200k-900k
+#      - backgrounds/ per-file <=512k, total repo <=5M
+big=$(find . -path ./.git -prune -o -type f -size +512k \
+        ! -name preview.png -print 2>/dev/null)
+if [[ -z $big ]]; then ok "tidak ada file >512k (kecuali preview.png)"
 else bad "file besar ikut: $big"; fi
+
+if [[ -f preview.png ]]; then
+  preview_k=$(du -k preview.png | cut -f1)
+  if ((preview_k <= 1024)); then ok "preview.png ${preview_k}k (ikut konvensi Omarchy)"
+  else bad "preview.png ${preview_k}k — konvensi Omarchy 200-900k, ini kegedean"; fi
+fi
+
+repo_k=$(du -sk --exclude=.git . | cut -f1)
+if ((repo_k <= 5120)); then ok "repo ${repo_k}k (batas 5M)"
+else bad "repo ${repo_k}k — lewat batas 5M, background atau font mentah ikut"; fi
 
 # 5. Payload: 12 file di path persis (install.sh menyalin dari daftar ini).
 expected=(
@@ -152,6 +168,40 @@ if git rev-parse --git-dir >/dev/null 2>&1; then
     bad "token ditemukan di riwayat git"
   else ok "riwayat git bersih"; fi
 fi
+
+# 17. File TANPA template .tpl di Omarchy — satu-satunya yang wajib disorhut repo.
+#    omarchy-theme-set hanya refusing menimpa file yang sudah ada di folder tema,
+#     sisanya di-generate dari colors.toml. Tapi tiga nama ini tidak punya
+#     .tpl di /usr/share/omarchy/default/themed sama sekali:
+#       walker.css  -> tanpa ini launcher/menu jatuh ke default GTK
+#       backgrounds/ -> tanpa ini theme-set memunculkan "No background was found"
+#       preview.png -> tanpa ini carousel theme picker kosong untuk tema ini
+#     Gate ini harus gagal kalau salah satu hilang; dia diuji dengan mutasi.
+for f in walker.css preview.png; do
+  if [[ -s $f ]]; then ok "$f ada dan tidak kosong"
+  else bad "$f hilang/kosong — Omarchy tidak punya ${f}.tpl, theme harus membawanya sendiri"; fi
+done
+
+if [[ -d backgrounds ]]; then
+  bg=$(find backgrounds -maxdepth 1 -type f \
+        \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' \
+           -o -iname '*.gif' -o -iname '*.bmp' -o -iname '*.webp' \) 2>/dev/null)
+  if [[ -n $bg ]]; then ok "backgrounds/ punya gambar ($(wc -l <<<"$bg") file)"
+  else bad "backgrounds/ kosong atau tanpa gambar — theme-set akan gagal cari background"; fi
+else bad "backgrounds/ hilang — theme-set akan gagal cari background"; fi
+
+# 18. Warna walker.css harus nyambung ke colors.toml. Kalau palette berubah tapi
+#     walker.css tidak, menu diam-diam jadi warna theme lain tanpa error.
+if [[ -f walker.css && -f colors.toml ]]; then
+  # background walker = isi kotak, jadi darker_background — bukan background
+  # halaman. Tori/vantablack juga begitu (#040004 vs base), jadi ini disengaja.
+  for pair in 'base:0a0a0a' 'background:050505' 'foreground:e8e8e8' 'bright_red:cc1515'; do
+    k=${pair%%:*}; want=${pair##*:}
+    if grep -qE "@define-color[[:space:]]+$k[[:space:]]+#?$want\b" walker.css; then
+      ok "walker.css $k = #$want"
+    else bad "walker.css $k tidak cocok colors.toml (harus #$want)"; fi
+  done
+else bad "walker.css atau colors.toml hilang — palet menu tidak bisa diverifikasi"; fi
 
 printf '\n'
 if ((fail)); then printf '  %d pemeriksaan gagal\n' "$fail" >&2; exit 1; fi

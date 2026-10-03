@@ -1,0 +1,83 @@
+/* Tsugumori — Knights of Sidonia. Colors mirrored from colors.toml.
+   Structure matches the corner-bracket walker styling used by Omarchy's
+   vantablack/tori themes. Walker ships no .tpl, so a git-installed theme
+   must carry this file itself or walker falls back to GTK defaults. */
+
+@define-color selected-text #909090;
+@define-color text #c8c8c4;
+@define-color base #0a0a0a;
+@define-color border #909090;
+@define-color foreground #e8e8e8;
+@define-color background #050505;
+
+@define-color dk_red #4a0e0e;
+@define-color bright_red #cc1515;
+
+window {
+    background-color: transparent;
+    background-image: radial-gradient(circle at center, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.4) 34%, rgba(0, 0, 0, 0) 62%);
+    transition: opacity 600ms ease;
+}
+
+window .box-wrapper,
+#box {
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    transition: opacity 600ms ease, background-color 600ms ease;
+    background-image:
+        linear-gradient(to bottom right, transparent 0 10px, @dk_red 10px, @bright_red 13px, transparent 13px),
+        linear-gradient(to bottom left, transparent 0 10px, @dk_red 10px, @bright_red 13px, transparent 13px),
+        linear-gradient(to top left, transparent 0 10px, @dk_red 10px, @bright_red 13px, transparent 13px),
+        linear-gradient(to top right, transparent 0 10px, @dk_red 10px, @bright_red 13px, transparent 13px),
+        linear-gradient(to bottom right, transparent 0 12px, @background 12px),
+        linear-gradient(to bottom left, transparent 0 12px, @background 12px),
+        linear-gradient(to top left, transparent 0 12px, @background 12px),
+        linear-gradient(to top right, transparent 0 12px, @background 12px),
+        linear-gradient(to right, @dk_red, @bright_red),
+        linear-gradient(to right, @dk_red, @bright_red),
+        linear-gradient(to bottom, @dk_red, @bright_red),
+        linear-gradient(to bottom, @dk_red, @bright_red),
+        linear-gradient(@background, @background),
+        linear-gradient(@background, @background),
+        linear-gradient(@background, @background),
+        linear-gradient(@background, @background),
+        linear-gradient(@background, @background);
+    background-size:
+        16px 16px,
+        16px 16px,
+        16px 16px,
+        16px 16px,
+        16px 16px,
+        16px 16px,
+        16px 16px,
+        16px 16px,
+        calc(100% - 32px) 3px,
+        calc(100% - 32px) 3px,
+        3px calc(100% - 32px),
+        3px calc(100% - 32px),
+        calc(100% - 32px) calc(100% - 32px),
+        calc(100% - 32px) 16px,
+        calc(100% - 32px) 16px,
+        16px calc(100% - 32px),
+        16px calc(100% - 32px);
+    background-position:
+        top left,
+        top right,
+        bottom right,
+        bottom left,
+        top left,
+        top right,
+        bottom right,
+        bottom left,
+        top center,
+        bottom center,
+        center left,
+        center right,
+        center,
+        top center,
+        bottom center,
+        center left,
+        center right;
+    background-repeat: no-repeat;
+}
