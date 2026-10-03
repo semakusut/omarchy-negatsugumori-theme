@@ -6,6 +6,20 @@ hitam `#0a0a0a`, dengan lock screen, bar, dan launcher menu yang reskin penuh.
 Ada **dua jalur instalasi**. Jalur pertama cukup warna dan tidak butuh root;
 jalur kedua opsional dan menimpa file root-owned.
 
+## Pratinjau
+
+Desktop dengan wallpaper:
+
+![Desktop dengan wallpaper](screenshots/1.webp)
+
+Launcher Walker:
+
+![Launcher Walker](screenshots/2.webp)
+
+Aplikasi terbuka:
+
+![Aplikasi terbuka](screenshots/3.webp)
+
 ---
 
 ## Jalur 1 — theme saja (disarankan)
