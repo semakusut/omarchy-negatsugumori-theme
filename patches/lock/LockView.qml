@@ -21,7 +21,8 @@ FocusScope {
 
     // --- Kontrak Service.qml (wajib ada walau tak dipakai; bind ke props
     // --- yang hilang = QML throw). Wallpaper sengaja diabaikan: lock
-    // --- Tsugumori = solid #0a0a0a (dark_background) + shader field, tanpa wallpaper.
+    // --- Tsugumori = solid #000000 + shader field, tanpa wallpaper. Fullscreen,
+    // --- bukan sidebar: jadi ikut background, bukan dark_background.
     property string backgroundPath: ""
     property int backgroundVersion: 0
     property bool fingerprintConfigured: false
@@ -210,7 +211,7 @@ FocusScope {
     }
 
     // --- PhaseLockView.qml:110-151 verbatim ---
-    Rectangle { anchors.fill: parent; color: "#0a0a0a" }
+    Rectangle { anchors.fill: parent; color: "#000000" }
     Item {
         id: field
         objectName: "phaseField"
@@ -262,12 +263,12 @@ FocusScope {
         transformOrigin: Item.Center
         x: Math.round((view.width - width) / 2)
         y: Math.round((view.height - height) / 2)
-        Rectangle { anchors.fill: parent; color: "#090909"; opacity: view.phase.back }
+        Rectangle { anchors.fill: parent; color: "#000000"; opacity: view.phase.back }
         Rectangle {
             anchors.fill: parent
             color: "transparent"
             border.width: 1
-            border.color: "#49423a"
+            border.color: "#161616"
             opacity: view.phase.border
         }
         Rectangle {
@@ -469,7 +470,7 @@ FocusScope {
                 Rectangle {
                     objectName: "passwordRow"
                     width: parent.width; height: 44
-                    color: "#111111"; border.width: 1; border.color: "#55504a"
+                    color: "#000000"; border.width: 1; border.color: "#161616"
                     Rectangle {
                         width: 2; height: parent.height
                         color: passwordInput.activeFocus ? "#ed272d" : view.red
@@ -558,7 +559,7 @@ FocusScope {
                     width: parent.width; height: 44
                     Rectangle {
                         width: parent.width; height: 1
-                        color: "#3b3631"
+                        color: "#161616"
                     }
                     Row {
                         objectName: "powerControls"
