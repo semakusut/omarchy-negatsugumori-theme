@@ -107,7 +107,7 @@ Item {
         else { add(label,w-15,12,white,11,500,.6,"right"); if(!compact)add("LOCAL // 17",8,19,grey); }
         return p;
     }
-    Rectangle { anchors.fill: parent; color: "#080808" }
+    Rectangle { anchors.fill: parent; color: "#0a0a0a" }
     Repeater {
         model: corner.paths
         Shape {

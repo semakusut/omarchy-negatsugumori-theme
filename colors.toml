@@ -5,8 +5,12 @@ accent = "#cc1515"
 selection = "#2a2a2a"
 muted = "#909090"
 
-background = "#0a0a0a"
-dark_background = "#080808"
+background = "#000000"
+# Di atas hitam pekat, "lebih gelap" tidak mungkin. Level di bawah background
+# karena itu dinaikkan agar sidebar/status bar (t3code, hermes) tetap terlihat
+# sebagai permukaan tersendiri. Ramp tetap naik:
+# 000000 < 050505 < 0a0a0a < 1a1a1a
+dark_background = "#0a0a0a"
 darker_background = "#050505"
 lighter_background = "#1a1a1a"
 

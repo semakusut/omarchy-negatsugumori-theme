@@ -30,8 +30,8 @@ expect_msg() { # $1=desc $2=file $3=substring yang harus muncul di output
 
 GOOD='mode = "dark"
 accent = "#cc1515"
-background = "#0a0a0a"
-dark_background = "#080808"
+background = "#000000"
+dark_background = "#0a0a0a"
 foreground = "#e8e8e8"'
 
 printf '%s\n' "$GOOD" > "$TMP/good.toml"
@@ -49,8 +49,8 @@ expect_msg "file tidak ada -> sebut path" "$TMP/tidak-ada.toml" "tidak ditemukan
 # justru nama slot yang dibesarkan akan gagal, dan itu memang tidak didukung.
 printf '%s\n' 'mode = "dark"
 accent = "#CC1515"
-background = "#0A0A0A"
-dark_background = "#080808"
+background = "#000000"
+dark_background = "#0A0A0A"
 foreground = "#E8E8E8"' > "$TMP/besar.toml"
 expect_rc "huruf besar pada hex tetap dikenali" 0 palette_check "$TMP/besar.toml"
 

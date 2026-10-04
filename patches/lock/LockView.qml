@@ -21,7 +21,7 @@ FocusScope {
 
     // --- Kontrak Service.qml (wajib ada walau tak dipakai; bind ke props
     // --- yang hilang = QML throw). Wallpaper sengaja diabaikan: lock
-    // --- Tsugumori = solid #080808 + shader field, tanpa wallpaper.
+    // --- Tsugumori = solid #0a0a0a (dark_background) + shader field, tanpa wallpaper.
     property string backgroundPath: ""
     property int backgroundVersion: 0
     property bool fingerprintConfigured: false
@@ -210,7 +210,7 @@ FocusScope {
     }
 
     // --- PhaseLockView.qml:110-151 verbatim ---
-    Rectangle { anchors.fill: parent; color: "#080808" }
+    Rectangle { anchors.fill: parent; color: "#0a0a0a" }
     Item {
         id: field
         objectName: "phaseField"

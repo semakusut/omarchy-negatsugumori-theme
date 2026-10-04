@@ -113,7 +113,7 @@ Item {
   // Bound to the central [menu] section in shell.toml via Color.qml.
   // Each color already includes its alpha companion (composed in the
   // singleton), so consumers can drop them straight into a Rectangle.
-  property color background: Qt.rgba(10/255, 10/255, 10/255, 0.88)   // ink [paper]
+  property color background: "#e0000000"                                 // ink [paper] pitch black @0.88
   property color foreground: "#f2e8e8e8"                              // inkStrong
   property color border: Qt.rgba(204/255, 21/255, 21/255, 0.15)      // lineSoft
   property color lineVsoft: Qt.rgba(204/255, 21/255, 21/255, 0.08)   // grid rule

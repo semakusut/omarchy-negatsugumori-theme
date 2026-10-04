@@ -95,10 +95,24 @@ if grep -rqE 'shell/plugins/lock/Service\.qml' patches/ 2>/dev/null; then
   bad "payload menyentuh Service.qml — power logic harus tetap stock"
 else ok "Service.qml tidak disentuh"; fi
 
-# 8. Jangkar palet masih utuh di payload.
-for a in '#0a0a0a' '#080808' '#cc1515' '#e8e8e8'; do
-  grep -rqF "$a" patches/ || bad "jangkar $a hilang dari payload"
-done
+# 8. Jangkar palet masih utuh di payload. Daftar diambil dari lib/palette.sh
+#    (sumber tunggal) — bukan hex yang ditulis ulang di sini, supaya check #8
+#    dan palette_check (#13) tidak bisa runaway lama setelah palet bergeser.
+#    Hex 8-digit #AARRGGBB ikut dihitung: payload menumi alpha di depan RGB,
+#    jadi #e0000000 tetap memenuhi jangkar #000000.
+if [[ -f lib/palette.sh ]]; then
+  source lib/palette.sh
+  # Normalisasi: buang '#', kecilkan, dan untuk 8-digit #AARRGGBB ambil 6 digit
+  # RGB terakhir (alpha ada di depan). Hasilnya satu set hex 6 digit.
+  payload_rgb=$(grep -rhoE '#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?' patches/ \
+    | tr 'A-Z' 'a-z' | tr -d '#' | awk '{print length($0)==8 ? substr($0,3) : $0}' | sort -u)
+  for pair in "${TSUGUMORI_ANCHORS[@]}"; do
+    a=${pair%%:*}
+    if grep -qxF "${a#\#}" <<<"$payload_rgb"; then
+      ok "jangkar $a ada di payload"
+    else bad "jangkar $a hilang dari payload"; fi
+  done
+else bad "lib/palette.sh hilang — jangkar payload tak bisa diverifikasi"; fi
 
 # 9. Sudoers harus per-file, tanpa wildcard maupun ALL.
 if grep -rnE 'NOPASSWD:.*(\*|ALL)' install.sh hooks/ patches/ 2>/dev/null >/dev/null; then
@@ -192,14 +206,26 @@ else bad "backgrounds/ hilang — theme-set akan gagal cari background"; fi
 
 # 18. Warna walker.css harus nyambung ke colors.toml. Kalau palette berubah tapi
 #     walker.css tidak, menu diam-diam jadi warna theme lain tanpa error.
+#
+#     Nilainya DIBACA dari colors.toml, bukan ditulis literal di sini. Versi
+#     sebelumnya punya 'base:0a0a0a' hardcoded -- begitu palet diubah, gate ini
+#     tetap hijau sambil Walker memakai warna lama. Gate yang tidak bisa gagal
+#     bukan gate. Mapping-nya:
+#       base         -> background          (permukaan menu = warna halaman)
+#       background   -> darker_background   (isi kotak; tori/vantablack juga
+#                                              begitu -- #040004 vs base)
+#       foreground   -> foreground
+#       bright_red   -> accent
 if [[ -f walker.css && -f colors.toml ]]; then
-  # background walker = isi kotak, jadi darker_background — bukan background
-  # halaman. Tori/vantablack juga begitu (#040004 vs base), jadi ini disengaja.
-  for pair in 'base:0a0a0a' 'background:050505' 'foreground:e8e8e8' 'bright_red:cc1515'; do
-    k=${pair%%:*}; want=${pair##*:}
-    if grep -qE "@define-color[[:space:]]+$k[[:space:]]+#?$want\b" walker.css; then
-      ok "walker.css $k = #$want"
-    else bad "walker.css $k tidak cocok colors.toml (harus #$want)"; fi
+  toml_color() { grep -m1 "^$1[[:space:]]*=" colors.toml | cut -d'"' -f2 | tr -d '#' | tr 'A-Z' 'a-z'; }
+  for pair in 'base:background' 'background:darker_background' \
+              'foreground:foreground' 'bright_red:accent'; do
+    k=${pair%%:*}; src=${pair##*:}; want=$(toml_color "$src")
+    if [[ -z $want ]]; then
+      bad "colors.toml tidak punya key '$src' — walker.css $k tak bisa diverifikasi"
+    elif grep -qE "@define-color[[:space:]]+$k[[:space:]]+#?$want\b" walker.css; then
+      ok "walker.css $k = #$want (colors.toml $src)"
+    else bad "walker.css $k tidak cocok colors.toml $src (=#$want)"; fi
   done
 else bad "walker.css atau colors.toml hilang — palet menu tidak bisa diverifikasi"; fi
 

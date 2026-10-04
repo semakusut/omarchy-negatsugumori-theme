@@ -6,8 +6,8 @@
 
 # Dipisah dari install.sh supaya bisa di-source tanpa menjalankan efek samping.
 readonly TSUGUMORI_ANCHORS=(
-  "#0a0a0a:background"
-  "#080808:dark_background"
+  "#000000:background"
+  "#0a0a0a:dark_background"
   "#cc1515:accent"
   "#e8e8e8:foreground"
 )
